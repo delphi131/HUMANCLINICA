@@ -27,7 +27,7 @@
 return [
     'users' => [
         'table'            => 'tUsers',
-        'pk'                => 'id',
+        'pk'                => 'Id',
         'username'          => 'username',
         // Legacy reversible-cipher password used by the existing ASP.NET app.
         // The PHP panel never reads/writes this column.

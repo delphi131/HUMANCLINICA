@@ -66,8 +66,12 @@ final class UserRepository
     public function isAdmin(array $user): bool
     {
         $value = $user[$this->map['type_profile']] ?? null;
-        return is_string($value)
-            && strcasecmp(trim($value), $this->map['type_profile_admin_value']) === 0;
+        if ($value === null) {
+            return false;
+        }
+        // type_profile can be numeric (tinyint) or text depending on the
+        // deployment, so compare loosely as trimmed, case-insensitive strings.
+        return strcasecmp(trim((string)$value), (string)$this->map['type_profile_admin_value']) === 0;
     }
 
     public function displayName(array $user): string
