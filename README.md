@@ -75,13 +75,16 @@ Esegui prima la migrazione che aggiunge la colonna (una tantum):
 1. Copia `config/config.sample.php` in `config/config.php` e compila i dati
    di connessione al database (`config.php` è escluso da git, non committare
    credenziali reali).
-2. Esegui la migrazione SQL `db/migrations/001_add_password_hash_column.sql`
-   sul database.
+2. Esegui le migrazioni SQL in `db/migrations/` sul database, in ordine
+   (`001_add_password_hash_column.sql`, poi `002_add_azienda_contratti_table.sql`).
 3. Verifica la mappatura schema:
    ```bash
    php tools/check_schema.php
    ```
-   correggi `config/schema.php` se necessario.
+   correggi `config/schema.php` se necessario (in particolare la sezione
+   `azienda`, ricostruita dal backup e non ancora verificata contro un
+   database reale — usa `php tools/list_columns.php tAzienda` per controllare
+   i nomi esatti).
 4. Imposta la password del primo utente (es. l'admin già esistente in
    `tUsers`):
    ```bash
@@ -186,6 +189,7 @@ db/migrations/      script SQL una tantum
 src/                classi PHP (Database, Auth, Repository, SmtpMailer, ...)
 tools/              script da riga di comando (set_password, check_schema)
 public/             document root: pagine, assets, endpoint api/*.php
+storage/contracts/  file dei contratti caricati — non pubblica
 deploy/deploy.ps1   script di sincronizzazione usato dal deploy automatico
 .github/workflows/  workflow GitHub Actions (deploy.yml)
 ```
@@ -215,6 +219,23 @@ deploy/deploy.ps1   script di sincronizzazione usato dal deploy automatico
   cifratura, utente, password, mittente) salvate anch'esse in `tMessages`
   (righe con `TYPE='CONFIG'`) così sono modificabili dalla stessa pagina,
   come nel pannello ASP.NET esistente.
+- **Utenti** (`utenti.php`, solo amministratori): crea/modifica/elimina
+  account di `tUsers` (sia amministratori sia Beauty Advisor, distinti dal
+  campo Ruolo/`typeProfile`), reimposta la password del pannello PHP.
+- **Aziende** (`aziende.php`, solo amministratori): CRUD su `tAzienda`
+  (anagrafica cliente/clinica a cui i Beauty Advisor possono essere
+  collegati).
+- **Contratto di collaborazione** (`azienda_contratto.php`, per singola
+  azienda): genera un documento HTML a partire dal template
+  `CONTRATTO_COLLABORAZIONE` (creabile in Messaggi, con segnaposto
+  `@NOME_AZIENDA`, `@PIVA`, `@SEDE`, `@CITTA`, `@CAP`, `@RAPPRESENTANTE`,
+  `@TELEFONO`, `@EMAIL`, `@DATA`) compilato con i dati dell'azienda, oppure
+  carica un file già firmato (PDF/DOC/DOCX, max 10MB). I documenti generati
+  si visualizzano/stampano da browser (`contratto_view.php`); quelli
+  caricati si scaricano tramite un endpoint autenticato
+  (`api/contract_download.php`). I file caricati sono salvati in
+  `storage/contracts/` (fuori dalla document root, mai serviti direttamente
+  da IIS/Apache — protetti anche da `.htaccess`/`web.config`).
 
 ## Note di sicurezza
 

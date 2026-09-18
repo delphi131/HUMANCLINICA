@@ -1,3 +1,5 @@
 config/config.php
 *.log
 .DS_Store
+storage/contracts/*
+!storage/contracts/.gitkeep

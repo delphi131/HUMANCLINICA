@@ -39,6 +39,7 @@ return [
         'nome'              => 'Nome',
         'cognome'           => 'cognome',
         'email'             => 'email',
+        'telephone'         => 'telephone',
         'id_azienda'        => 'id_azienda',
         'type_profile'      => 'typeProfile',
         // Value of type_profile that grants full admin rights (Gestione Utenti, etc.)
@@ -47,6 +48,42 @@ return [
         // accounts, including the "AMMINISTRATORE SISTEMA" one, have this
         // value). Adjust if a non-admin account turns out to also be 3.
         'type_profile_admin_value' => 3,
+        // Best guess for the non-admin (Beauty Advisor) role value — not yet
+        // confirmed against a real account with this role. Adjust once you
+        // create/see one, or just type the raw number in the Utenti form.
+        'type_profile_beauty_advisor_value' => 1,
+    ],
+
+    // UNVERIFIED against the live DB — reconstructed from .bak strings, like
+    // the rest of this file originally was. Run:
+    //   php tools/list_columns.php tAzienda
+    // and correct below before relying on the Aziende page.
+    'azienda' => [
+        'table'          => 'tAzienda',
+        'pk'              => 'id_Azienda',
+        'nome'            => 'Nome',
+        'piva'            => 'piva',
+        'sede'            => 'sede',
+        'citta'           => 'citta',
+        'cap'             => 'cap',
+        'rappresentante'  => 'Rappresentante',
+        'telephone'       => 'telephone',
+        'email'           => 'email',
+        'contratto'       => 'contratto',
+        'enabled'         => 'enabled',
+    ],
+
+    // New table this app adds — see db/migrations/002_add_azienda_contratti_table.sql
+    'azienda_contratti' => [
+        'table'      => 'tAziendaContratti',
+        'pk'          => 'id',
+        'id_azienda'  => 'id_Azienda',
+        'source'      => 'source',
+        'content'     => 'content',
+        'file_name'   => 'file_name',
+        'file_path'   => 'file_path',
+        'created_at'  => 'created_at',
+        'created_by'  => 'created_by',
     ],
 
     'reservations' => [
@@ -86,6 +123,7 @@ return [
     'template_names' => [
         'booking_confirmation' => 'CONFERMA_PRENOTAZIONE',
         'taken_in_charge'      => 'PRESA_IN_CARICO',
+        'collaboration_contract' => 'CONTRATTO_COLLABORAZIONE',
     ],
 
     // Config rows this app stores in tMessages (TYPE = 'CONFIG') for SMTP settings,

@@ -28,7 +28,7 @@ foreach ($stmt->fetchAll() as $row) {
 
 $problems = 0;
 
-foreach (['users', 'reservations', 'messages'] as $group) {
+foreach (['users', 'azienda', 'reservations', 'messages'] as $group) {
     $map = $schema[$group];
     $table = $map['table'];
     $tableKey = strtolower($table);
@@ -44,7 +44,10 @@ foreach (['users', 'reservations', 'messages'] as $group) {
     $columnsInDb = $actual[$tableKey];
 
     foreach ($map as $logicalName => $columnName) {
-        if ($logicalName === 'table' || str_starts_with($logicalName, 'type_profile_admin_value')) {
+        // Skip non-column config entries (table name itself, and numeric
+        // "magic value" settings like type_profile_admin_value) — real
+        // column names are always strings, those aren't.
+        if ($logicalName === 'table' || !is_string($columnName)) {
             continue;
         }
         $found = in_array($columnName, $columnsInDb, true);
