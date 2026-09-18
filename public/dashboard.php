@@ -23,14 +23,6 @@ $today = date('Y-m-d');
 
 <div class="container">
     <div class="card">
-        <div class="calendar-actions">
-            <button type="button" id="btn-new-reservation" class="btn btn-primary">+ Prenotazione manuale</button>
-            <button type="button" id="btn-new-reminder" class="btn btn-outline">+ Promemoria</button>
-        </div>
-        <div id="calendar"></div>
-    </div>
-
-    <div class="card">
         <h2>Prenotazioni</h2>
         <form id="filters-form" class="filters">
             <label>Dal
@@ -72,6 +64,14 @@ $today = date('Y-m-d');
             </tbody>
         </table>
         </div>
+    </div>
+
+    <div class="card">
+        <div class="calendar-actions">
+            <button type="button" id="btn-new-reservation" class="btn btn-primary">+ Prenotazione manuale</button>
+            <button type="button" id="btn-new-reminder" class="btn btn-outline">+ Promemoria</button>
+        </div>
+        <div id="calendar"></div>
     </div>
 </div>
 
