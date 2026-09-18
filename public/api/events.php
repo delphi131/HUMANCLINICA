@@ -47,25 +47,33 @@ foreach ($rows as $row) {
     ];
 }
 
-$reminderRepo = new ReminderRepository();
-$reminderRows = $reminderRepo->findByRange($from, $to);
-foreach ($reminderRows as $row) {
-    $rm = $reminderRepo->toLogical($row);
-    $events[] = [
-        'id' => 'rem-' . $rm['pk'],
-        'title' => '📌 ' . $rm['title'],
-        'start' => $rm['day'],
-        'allDay' => true,
-        'color' => '#555b6e',
-        'extendedProps' => [
-            'type' => 'reminder',
-            'pk' => $rm['pk'],
-            'title' => $rm['title'],
-            'note' => $rm['note'],
-            'email' => $rm['email'],
-            'send_email' => $rm['send_email'],
-        ],
-    ];
+// Reminders live in a table this app adds (db/migrations/003_...). If that
+// migration hasn't been run yet on this DB, don't let it take down the
+// whole calendar (including the real reservations queried above) — just
+// skip reminders silently.
+try {
+    $reminderRepo = new ReminderRepository();
+    $reminderRows = $reminderRepo->findByRange($from, $to);
+    foreach ($reminderRows as $row) {
+        $rm = $reminderRepo->toLogical($row);
+        $events[] = [
+            'id' => 'rem-' . $rm['pk'],
+            'title' => '📌 ' . $rm['title'],
+            'start' => $rm['day'],
+            'allDay' => true,
+            'color' => '#555b6e',
+            'extendedProps' => [
+                'type' => 'reminder',
+                'pk' => $rm['pk'],
+                'title' => $rm['title'],
+                'note' => $rm['note'],
+                'email' => $rm['email'],
+                'send_email' => $rm['send_email'],
+            ],
+        ];
+    }
+} catch (Throwable $e) {
+    // ignore — see comment above
 }
 
 echo json_encode($events);
