@@ -159,6 +159,19 @@ con `git fetch` + `git reset --hard` **solo in quella cartella di lavoro**,
 mai nella cartella del sito. Aggiungi `-IisAppPool "nome-app-pool"` per
 riavviare automaticamente l'application pool a fine deploy.
 
+In alternativa, `deploy/quick-deploy.ps1` segue lo schema "wipe & republish"
+(cancella la cartella del sito e la ripubblica da zero ad ogni deploy,
+come per altri progetti tipo Orion): richiede che il repo sia già clonato a
+mano in `C:\deploy-src\humanclinica` (le due variabili `$RepoPath` e
+`$SitePath` in cima allo script vanno adattate ai tuoi percorsi reali).
+Salva `config\config.php` da parte prima di cancellare la cartella e lo
+rimette a posto subito dopo, perché — a differenza di un output di build —
+contiene le credenziali reali del server e non è nel repo:
+
+```powershell
+.\deploy\quick-deploy.ps1
+```
+
 ## Struttura
 
 ```
