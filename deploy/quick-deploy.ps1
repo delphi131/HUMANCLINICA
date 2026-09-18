@@ -13,12 +13,11 @@
 
 $RepoUrl  = "https://github.com/delphi131/HUMANCLINICA.git"
 $RepoPath = "C:\humanclinica-src"                              # copia di lavoro locale del repo
-# Cartella di deploy del pannello. NON deve necessariamente stare dentro la
-# cartella fisica del sito www.humanclinica.com esistente: il pannello viene
-# esposto su https://www.humanclinica.com/admin/ tramite una IIS Application
-# (Add Application, alias "admin") il cui Physical Path punta a "$SitePath\public",
-# indipendentemente da dove sta questa cartella sul disco.
-$SitePath = "C:\iss-Site\humanclinica-admin"
+# Cartella di deploy del pannello: deve corrispondere ESATTAMENTE al Physical
+# Path configurato per la IIS Application "admin" (meno "\public", che ci
+# pensa deploy.ps1 ad aggiungerlo) — è la stessa cartella dove hai creato
+# config\config.php a mano.
+$SitePath = "C:\iss-Site\app.humanclinica.it\admin"
 
 $ErrorActionPreference = "Stop"
 
