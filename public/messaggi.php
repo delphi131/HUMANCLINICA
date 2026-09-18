@@ -68,7 +68,7 @@ $smtp = $messages->getSmtpConfig();
     <div class="card">
         <h2>Modelli di messaggio</h2>
         <p class="hint">
-            Modelli prenotazioni (CONFERMA_PRENOTAZIONE, PRESA_IN_CARICO): usa @NOME, @COGNOME, @DATA, @ORA, @TELEFONO, @EMAIL.<br>
+            Modelli prenotazioni (CONFERMA_PRENOTAZIONE, PRESA_IN_CARICO): usa @NOME, @COGNOME, @DATA, @TELEFONO, @EMAIL (le prenotazioni hanno solo il giorno, non un orario).<br>
             Modello contratto (CONTRATTO_COLLABORAZIONE, dalla pagina Aziende): usa @NOME_AZIENDA, @PIVA, @SEDE, @CITTA, @CAP, @RAPPRESENTANTE, @TELEFONO, @DATA.<br>
             <strong>Attenzione:</strong> qui sotto compaiono anche i modelli già usati dal sito ASP.NET esistente
             (es. CONFERMA_PRENOTAZIONE, ACCOUNT, WHATSAPP...) — modificarli qui cambia anche quello che invia il sito

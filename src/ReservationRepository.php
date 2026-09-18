@@ -11,6 +11,28 @@ final class ReservationRepository
     /** Logical fields an admin is allowed to edit from the UI. */
     private const EDITABLE = ['day', 'status', 'beauty_advisor', 'nome', 'cognome', 'telefono', 'email', 'price', 'pacchetto'];
 
+    /**
+     * "day" is stored as an int in YYYYMMDD format (e.g. 20260917), no time
+     * component — confirmed live: reservations aren't booked for a specific
+     * hour, the beauty advisor calls back the same day. These helpers
+     * convert to/from that format at the repository boundary so the rest of
+     * the app (JS, email placeholders, forms) only ever deals with plain
+     * 'Y-m-d' date strings.
+     */
+    public static function toDayInt(DateTimeInterface $date): int
+    {
+        return (int)$date->format('Ymd');
+    }
+
+    public static function fromDayInt($value): ?string
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+        $date = DateTime::createFromFormat('Ymd', (string)$value);
+        return $date ? $date->format('Y-m-d') : null;
+    }
+
     public function __construct()
     {
         $this->pdo = Database::pdo();
@@ -30,8 +52,8 @@ final class ReservationRepository
     {
         $sql = sprintf('SELECT * FROM %s WHERE %s >= :from AND %s < :to', $this->table, $this->col('day'), $this->col('day'));
         $params = [
-            'from' => $from->format('Y-m-d H:i:s'),
-            'to' => $to->format('Y-m-d H:i:s'),
+            'from' => self::toDayInt($from),
+            'to' => self::toDayInt($to),
         ];
 
         if ($status !== null && $status !== '') {
@@ -117,6 +139,7 @@ final class ReservationRepository
             }
             $out[$logicalName] = $row[$column] ?? null;
         }
+        $out['day'] = self::fromDayInt($out['day'] ?? null);
         return $out;
     }
 }

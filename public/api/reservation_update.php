@@ -25,7 +25,7 @@ foreach (['nome', 'cognome', 'telefono', 'email', 'status', 'beauty_advisor'] as
 if (!empty($_POST['day'])) {
     try {
         $day = new DateTime((string)$_POST['day']);
-        $fields['day'] = $day->format('Y-m-d H:i:s');
+        $fields['day'] = ReservationRepository::toDayInt($day);
     } catch (Exception $e) {
         json_error('Data non valida.');
     }

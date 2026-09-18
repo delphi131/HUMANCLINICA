@@ -26,19 +26,17 @@
         return div.innerHTML;
     }
 
-    function toLocalInputValue(dateStr) {
-        if (!dateStr) return '';
-        const d = new Date(dateStr.replace(' ', 'T'));
-        if (isNaN(d.getTime())) return '';
-        const pad = (n) => String(n).padStart(2, '0');
-        return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    // "day" is a plain 'YYYY-MM-DD' string (reservations only carry a day,
+    // no time — the beauty advisor calls back the same day).
+    function toDateInputValue(dateStr) {
+        return dateStr || '';
     }
 
     function formatDate(dateStr) {
         if (!dateStr) return '';
-        const d = new Date(dateStr.replace(' ', 'T'));
+        const d = new Date(dateStr + 'T00:00:00');
         if (isNaN(d.getTime())) return dateStr;
-        return d.toLocaleString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+        return d.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' });
     }
 
     function whatsappLink(phone, text) {
@@ -158,7 +156,7 @@
         document.getElementById('edit-cognome').value = row.cognome || '';
         document.getElementById('edit-telefono').value = row.telefono || '';
         document.getElementById('edit-email').value = row.email || '';
-        document.getElementById('edit-day').value = toLocalInputValue(row.day);
+        document.getElementById('edit-day').value = toDateInputValue(row.day);
         document.getElementById('edit-status').value = (row.status || 'NUOVO').toUpperCase();
         document.getElementById('edit-beauty-advisor').value = row.beauty_advisor || '';
         openModal('modal-edit');

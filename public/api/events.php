@@ -41,6 +41,7 @@ foreach ($rows as $row) {
         'id' => $r['pk'] ?? null,
         'title' => $title,
         'start' => $r['day'],
+        'allDay' => true,
         'color' => $statusColors[$status] ?? '#7b3ff2',
     ];
 }

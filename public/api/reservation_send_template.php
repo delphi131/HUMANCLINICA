@@ -50,8 +50,9 @@ try {
 $html = $messages->render($templateValue, [
     'NOME' => $r['nome'] ?? '',
     'COGNOME' => $r['cognome'] ?? '',
+    // Reservations only carry a day, not a specific time (the beauty
+    // advisor calls back the same day) — @ORA is intentionally not offered.
     'DATA' => $dayObj ? $dayObj->format('d/m/Y') : '',
-    'ORA' => $dayObj ? $dayObj->format('H:i') : '',
     'TELEFONO' => $r['telefono'] ?? '',
     'EMAIL' => $r['email'] ?? '',
 ]);

@@ -89,8 +89,8 @@ $today = date('Y-m-d');
             <label>Email
                 <input type="email" name="email" id="edit-email">
             </label>
-            <label>Data e ora
-                <input type="datetime-local" name="day" id="edit-day">
+            <label>Data
+                <input type="date" name="day" id="edit-day">
             </label>
             <label>Stato
                 <select name="status" id="edit-status">
