@@ -12,8 +12,8 @@
 # qui sotto, poi esegui questo script (o incollane il contenuto a mano).
 
 $RepoUrl  = "https://github.com/delphi131/HUMANCLINICA.git"
-$RepoPath = "C:\deploy-src\humanclinica"      # copia di lavoro locale del repo
-$SitePath = "D:\sites\humanclinica-admin"     # cartella del sito live (IIS punta a "$SitePath\public")
+$RepoPath = "C:\humanclinica-src"                              # copia di lavoro locale del repo
+$SitePath = "C:\iss-Site\app.humanclinica.it\admin"             # cartella del sito live (IIS punta a "$SitePath\public")
 
 $ErrorActionPreference = "Stop"
 
