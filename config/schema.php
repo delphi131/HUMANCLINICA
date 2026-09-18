@@ -42,8 +42,11 @@ return [
         'id_azienda'        => 'id_azienda',
         'type_profile'      => 'typeProfile',
         // Value of type_profile that grants full admin rights (Gestione Utenti, etc.)
-        // Anything else is treated as a Beauty Advisor.
-        'type_profile_admin_value' => 'ADMIN',
+        // Anything else is treated as a Beauty Advisor. typeProfile is
+        // tinyint on the real DB; confirmed 3 = admin (both existing
+        // accounts, including the "AMMINISTRATORE SISTEMA" one, have this
+        // value). Adjust if a non-admin account turns out to also be 3.
+        'type_profile_admin_value' => 3,
     ],
 
     'reservations' => [
