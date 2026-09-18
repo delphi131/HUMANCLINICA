@@ -130,6 +130,15 @@ final class UserRepository
         $cols[$this->col('password_hash')] = ':p_hash';
         $params['p_hash'] = password_hash($plainPassword, PASSWORD_BCRYPT);
 
+        // The legacy Password column is NOT NULL on the live DB, but its
+        // reversible-cipher format/key is unknown (see README) so we can't
+        // write a value the ASP.NET app could ever decrypt correctly. A
+        // random placeholder just satisfies the constraint — users created
+        // here can only log into this PHP panel, not the ASP.NET site,
+        // until an admin sets a real legacy password for them there.
+        $cols[$this->col('password_legacy')] = ':p_legacy';
+        $params['p_legacy'] = bin2hex(random_bytes(16));
+
         $sql = sprintf(
             'INSERT INTO %s (%s) VALUES (%s)',
             $this->table,

@@ -88,6 +88,9 @@ $baValue = (int)$schema['type_profile_beauty_advisor_value'];
 <div class="container">
     <div class="card" style="max-width:560px">
         <h2><?= $isEdit ? 'Modifica utente' : 'Nuovo utente' ?></h2>
+        <?php if (!$isEdit): ?>
+        <p class="hint">La password impostata qui vale solo per questo pannello. Un utente creato da qui non può ancora accedere al sito ASP.NET esistente (algoritmo di cifratura diverso, non replicabile).</p>
+        <?php endif; ?>
 
         <?php if ($notice): ?><div class="alert alert-success"><?= htmlspecialchars($notice) ?></div><?php endif; ?>
         <?php if ($error): ?><div class="alert alert-error"><?= htmlspecialchars($error) ?></div><?php endif; ?>
