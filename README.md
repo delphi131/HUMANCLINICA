@@ -142,6 +142,23 @@ il runner gira sul server e va lui stesso a "tirare" gli aggiornamenti.
 Da quel momento, ogni volta che fai il merge su `main`, il sito si aggiorna
 da solo entro pochi secondi.
 
+### Deploy manuale (senza runner)
+
+Se preferisci lanciare il deploy a mano invece di configurare il runner
+automatico, `deploy/manual-deploy.ps1` fa tutto in un colpo: clona/aggiorna
+il repository da GitHub e sincronizza la cartella del sito (richiede `git`
+e `php` nel PATH del server):
+
+```powershell
+.\deploy\manual-deploy.ps1 -Destination "D:\sites\humanclinica-admin"
+```
+
+Alla prima esecuzione clona il repo in `C:\deploy-src\humanclinica`
+(personalizzabile con `-ClonePath`); alle esecuzioni successive lo aggiorna
+con `git fetch` + `git reset --hard` **solo in quella cartella di lavoro**,
+mai nella cartella del sito. Aggiungi `-IisAppPool "nome-app-pool"` per
+riavviare automaticamente l'application pool a fine deploy.
+
 ## Struttura
 
 ```
