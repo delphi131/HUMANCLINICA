@@ -36,9 +36,14 @@ if (-not (Test-Path $Destination)) {
 
 Write-Host "Sincronizzo $Source -> $Destination"
 
+# NOTE: robocopy's /XF matches by filename, case-insensitively (like all
+# Windows path matching) — a bare "config.php" would ALSO exclude
+# src\Config.php (same name, different case), which is a real class file we
+# need on the server, not the credentials file. Including the "config\"
+# path segment in the pattern disambiguates the two.
 robocopy $Source $Destination /MIR `
     /XD ".git" ".github" `
-    /XF "config.php" `
+    /XF "config\config.php" `
     /NFL /NDL /NP /R:2 /W:5
 
 # Robocopy exit codes: 0-7 = success (various combinations of copied/skipped
