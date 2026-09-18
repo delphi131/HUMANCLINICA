@@ -5,8 +5,14 @@ declare(strict_types=1);
 final class MessageRepository
 {
     private const DEFAULT_LANG = 'IT';
-    private const TYPE_TEMPLATE = 'HTML';
-    private const TYPE_CONFIG = 'CONFIG';
+    // TYPE is varchar(2) on the live DB. 'M' ("Messaggio") is the value the
+    // existing ASP.NET app already uses for every real row (confirmed live:
+    // ACCOUNT, CONFERMA_PRENOTAZIONE, WHATSAPP, ...) — reusing it means our
+    // saveTemplate() updates the SAME row the public site reads from,
+    // instead of creating a duplicate under a type value nothing else reads.
+    private const TYPE_TEMPLATE = 'M';
+    // No existing rows use a config-only type; 'CF' is our own 2-char code.
+    private const TYPE_CONFIG = 'CF';
 
     private PDO $pdo;
     private array $map;
@@ -36,8 +42,15 @@ final class MessageRepository
         );
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(['name' => $name, 'type' => $type, 'lang' => $lang]);
-        $row = $stmt->fetch();
-        return $row ? (string)$row['v'] : null;
+        // VALUE is varchar(MAX): with the ODBC driver (db.driver = 'odbc'),
+        // PDO_ODBC can raise "String data, right truncated" on long content
+        // because SQL Server reports MAX columns with an unknown length. An
+        // explicit large output buffer works around it regardless of driver
+        // (harmless no-op on sqlsrv/dblib, and still requires odbc.defaultlrl
+        // in php.ini to be large enough — see README).
+        $stmt->bindColumn('v', $value, PDO::PARAM_STR, 8 * 1024 * 1024);
+        $row = $stmt->fetch(PDO::FETCH_BOUND);
+        return $row ? (string)$value : null;
     }
 
     private function setValue(string $name, string $type, string $value, string $lang = self::DEFAULT_LANG): void
@@ -95,7 +108,18 @@ final class MessageRepository
         );
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(['type' => self::TYPE_TEMPLATE]);
-        return $stmt->fetchAll();
+        // Bind+loop instead of fetchAll(): PDO::FETCH_BOUND only rebinds on
+        // each fetch(), not on fetchAll(), and the large explicit buffer is
+        // what avoids pdo_odbc's "String data, right truncated" on the
+        // varchar(MAX) value column (see getValue() above).
+        $stmt->bindColumn('name', $name);
+        $stmt->bindColumn('lang', $lang);
+        $stmt->bindColumn('value', $value, PDO::PARAM_STR, 8 * 1024 * 1024);
+        $rows = [];
+        while ($stmt->fetch(PDO::FETCH_BOUND)) {
+            $rows[] = ['name' => $name, 'lang' => $lang, 'value' => $value];
+        }
+        return $rows;
     }
 
     /**

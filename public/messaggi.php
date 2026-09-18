@@ -69,7 +69,11 @@ $smtp = $messages->getSmtpConfig();
         <h2>Modelli di messaggio</h2>
         <p class="hint">
             Modelli prenotazioni (CONFERMA_PRENOTAZIONE, PRESA_IN_CARICO): usa @NOME, @COGNOME, @DATA, @ORA, @TELEFONO, @EMAIL.<br>
-            Modello contratto (CONTRATTO_COLLABORAZIONE, dalla pagina Aziende): usa @NOME_AZIENDA, @PIVA, @SEDE, @CITTA, @CAP, @RAPPRESENTANTE, @TELEFONO, @DATA.
+            Modello contratto (CONTRATTO_COLLABORAZIONE, dalla pagina Aziende): usa @NOME_AZIENDA, @PIVA, @SEDE, @CITTA, @CAP, @RAPPRESENTANTE, @TELEFONO, @DATA.<br>
+            <strong>Attenzione:</strong> qui sotto compaiono anche i modelli già usati dal sito ASP.NET esistente
+            (es. CONFERMA_PRENOTAZIONE, ACCOUNT, WHATSAPP...) — modificarli qui cambia anche quello che invia il sito
+            pubblico. I placeholder @NOME ecc. funzionano solo per i messaggi inviati da questo pannello: se il sito
+            ASP.NET usa una sintassi diversa per i suoi segnaposto, non toccarla per errore.
         </p>
 
         <?php foreach ($templates as $t): ?>

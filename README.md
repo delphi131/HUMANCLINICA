@@ -66,6 +66,12 @@ Esegui prima la migrazione che aggiunge la colonna (una tantum):
   sistema (**ODBC Driver 17/18 for SQL Server**, da installare a parte se non
   già presente) tramite `PDO_ODBC`, che di solito è già incluso nelle build
   ufficiali di PHP per Windows e non dipende dalla versione di PHP.
+  Con `driver = 'odbc'` e colonne `varchar(MAX)`/`nvarchar(MAX)` (es.
+  `tMessages.VALUE`), PDO_ODBC può dare l'errore *"String data, right
+  truncated"* sui contenuti lunghi. Il codice già si difende con un buffer
+  esplicito (`bindColumn` con lunghezza grande), ma se persiste aumenta anche
+  `odbc.defaultlrl` in `php.ini` (es. `odbc.defaultlrl = 4194304` per 4MB)
+  e ricicla l'application pool.
 - Nessuna dipendenza esterna: niente Composer, niente librerie da installare
   (l'invio email usa un client SMTP scritto internamente in `src/SmtpMailer.php`,
   il calendario usa FullCalendar via CDN).
@@ -214,11 +220,15 @@ deploy/deploy.ps1   script di sincronizzazione usato dal deploy automatico
   - *Modifica* — modale per correggere nome, contatti, data/ora, stato,
     beauty advisor assegnato.
 - **Messaggi** (`messaggi.php`): elenco/editing dei template salvati in
-  `tMessages` (placeholder `@NOME`, `@COGNOME`, `@DATA`, `@ORA`, `@TELEFONO`,
-  `@EMAIL`), creazione di nuovi template, e impostazioni SMTP (host, porta,
-  cifratura, utente, password, mittente) salvate anch'esse in `tMessages`
-  (righe con `TYPE='CONFIG'`) così sono modificabili dalla stessa pagina,
-  come nel pannello ASP.NET esistente.
+  `tMessages` con `TYPE='M'` (placeholder `@NOME`, `@COGNOME`, `@DATA`,
+  `@ORA`, `@TELEFONO`, `@EMAIL`) — lo stesso valore già usato dalle righe
+  esistenti dell'app ASP.NET (CONFERMA_PRENOTAZIONE, ACCOUNT, WHATSAPP, ...),
+  quindi qui compaiono anche loro: modificarle da questa pagina cambia anche
+  ciò che invia il sito pubblico, occhio. Creazione di nuovi template, e
+  impostazioni SMTP (host, porta, cifratura, utente, password, mittente)
+  salvate anch'esse in `tMessages` ma con `TYPE='CF'` (un codice nuovo, non
+  usato dall'app esistente) così restano separate e modificabili dalla stessa
+  pagina.
 - **Utenti** (`utenti.php`, solo amministratori): crea/modifica/elimina
   account di `tUsers` (sia amministratori sia Beauty Advisor, distinti dal
   campo Ruolo/`typeProfile`), reimposta la password del pannello PHP.
