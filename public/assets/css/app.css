@@ -227,6 +227,7 @@ table.reservations tbody tr + tr td { border-top: 6px solid var(--bg); }
 .modal input:focus, .modal select:focus, .modal textarea:focus { outline: 2px solid var(--purple-light); outline-offset: 1px; }
 .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px; }
 
+.calendar-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
 #calendar { margin-bottom: 4px; }
 .fc { --fc-border-color: var(--separator); --fc-today-bg-color: rgba(123,63,242,.06); font-family: inherit; }
 .fc .fc-toolbar-title { font-size: 18px; font-weight: 700; color: var(--ink); }
@@ -276,7 +277,8 @@ table.reservations tbody tr + tr td { border-top: 6px solid var(--bg); }
 .card form input:focus, .card form select:focus, .card form textarea:focus { outline: 2px solid var(--purple-light); outline-offset: 1px; }
 
 /* iOS-style toggle switch for checkboxes */
-.card form label:has(input[type="checkbox"]) {
+.card form label:has(input[type="checkbox"]),
+.modal label:has(input[type="checkbox"]) {
     flex-direction: row; align-items: center; text-transform: none; font-weight: 600; color: var(--label); font-size: 14.5px;
 }
 input[type="checkbox"] {

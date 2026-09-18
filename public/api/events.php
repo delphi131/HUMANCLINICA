@@ -38,11 +38,33 @@ foreach ($rows as $row) {
     }
 
     $events[] = [
-        'id' => $r['pk'] ?? null,
+        'id' => 'res-' . $r['pk'],
         'title' => $title,
         'start' => $r['day'],
         'allDay' => true,
         'color' => $statusColors[$status] ?? '#7b3ff2',
+        'extendedProps' => ['type' => 'reservation', 'pk' => $r['pk']],
+    ];
+}
+
+$reminderRepo = new ReminderRepository();
+$reminderRows = $reminderRepo->findByRange($from, $to);
+foreach ($reminderRows as $row) {
+    $rm = $reminderRepo->toLogical($row);
+    $events[] = [
+        'id' => 'rem-' . $rm['pk'],
+        'title' => '📌 ' . $rm['title'],
+        'start' => $rm['day'],
+        'allDay' => true,
+        'color' => '#555b6e',
+        'extendedProps' => [
+            'type' => 'reminder',
+            'pk' => $rm['pk'],
+            'title' => $rm['title'],
+            'note' => $rm['note'],
+            'email' => $rm['email'],
+            'send_email' => $rm['send_email'],
+        ],
     ];
 }
 

@@ -79,6 +79,40 @@ final class ReservationRepository
         return $stmt->fetchAll();
     }
 
+    /**
+     * Insert a manually-created reservation (an admin booking a client
+     * directly from the calendar, not the public site). Lives in the same
+     * real tReservations table as ordinary bookings — there is no separate
+     * "manual" flag, it's just a normal row.
+     *
+     * @param array<string, mixed> $fields Logical field name => value.
+     */
+    public function create(array $fields): int
+    {
+        $cols = [];
+        $params = [];
+        foreach ($fields as $logicalName => $value) {
+            if (!in_array($logicalName, self::EDITABLE, true) || !isset($this->map[$logicalName])) {
+                continue;
+            }
+            $paramName = 'p_' . $logicalName;
+            $cols[$this->col($logicalName)] = ':' . $paramName;
+            $params[$paramName] = $value;
+        }
+        if (empty($cols)) {
+            throw new InvalidArgumentException('Nessun campo valido da inserire.');
+        }
+        $sql = sprintf(
+            'INSERT INTO %s (%s) VALUES (%s)',
+            $this->table,
+            implode(', ', array_keys($cols)),
+            implode(', ', array_values($cols))
+        );
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
+        return (int)$this->pdo->lastInsertId();
+    }
+
     public function find($id): ?array
     {
         $sql = sprintf('SELECT * FROM %s WHERE %s = :id', $this->table, $this->col('pk'));

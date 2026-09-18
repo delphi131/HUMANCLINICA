@@ -23,6 +23,10 @@ $today = date('Y-m-d');
 
 <div class="container">
     <div class="card">
+        <div class="calendar-actions">
+            <button type="button" id="btn-new-reservation" class="btn btn-primary">+ Prenotazione manuale</button>
+            <button type="button" id="btn-new-reminder" class="btn btn-outline">+ Promemoria</button>
+        </div>
         <div id="calendar"></div>
     </div>
 
@@ -126,6 +130,81 @@ $today = date('Y-m-d');
             <div class="modal-actions">
                 <button type="button" class="btn btn-secondary" data-close-modal>Annulla</button>
                 <button type="submit" class="btn btn-primary">Invia email</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal: nuova prenotazione manuale -->
+<div class="modal-backdrop" id="modal-new-reservation">
+    <div class="modal">
+        <h3>Nuova prenotazione manuale</h3>
+        <p class="hint">Creata direttamente qui, come una prenotazione normale.</p>
+        <form id="form-new-reservation">
+            <label>Nome
+                <input type="text" name="nome" id="new-res-nome">
+            </label>
+            <label>Cognome
+                <input type="text" name="cognome" id="new-res-cognome">
+            </label>
+            <label>Telefono
+                <input type="text" name="telefono" id="new-res-telefono">
+            </label>
+            <label>Email
+                <input type="email" name="email" id="new-res-email">
+            </label>
+            <label>Data
+                <input type="date" name="day" id="new-res-day" required>
+            </label>
+            <label>Stato
+                <select name="status" id="new-res-status">
+                    <option value="NUOVO">Nuovo</option>
+                    <option value="CONTATTATO">Contattato</option>
+                    <option value="CONFERMATO" selected>Confermato</option>
+                    <option value="ANNULLATO">Annullato</option>
+                </select>
+            </label>
+            <label>Beauty Advisor
+                <input type="text" name="beauty_advisor" id="new-res-beauty-advisor">
+            </label>
+            <label class="checkbox-row">
+                <input type="checkbox" name="send_email" id="new-res-send-email">
+                Invia email di conferma prenotazione
+            </label>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" data-close-modal>Annulla</button>
+                <button type="submit" class="btn btn-primary">Crea prenotazione</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal: promemoria (crea/modifica) -->
+<div class="modal-backdrop" id="modal-reminder">
+    <div class="modal">
+        <h3 id="reminder-modal-title">Nuovo promemoria</h3>
+        <form id="form-reminder">
+            <input type="hidden" name="id" id="reminder-id">
+            <label>Titolo
+                <input type="text" name="title" id="reminder-title" required>
+            </label>
+            <label>Nota
+                <textarea name="note" id="reminder-note" rows="4"></textarea>
+            </label>
+            <label>Data
+                <input type="date" name="day" id="reminder-day" required>
+            </label>
+            <label>Email (opzionale)
+                <input type="email" name="email" id="reminder-email">
+            </label>
+            <label class="checkbox-row">
+                <input type="checkbox" name="send_email" id="reminder-send-email">
+                Invia email di promemoria
+            </label>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-danger" id="btn-delete-reminder" style="display:none">Elimina</button>
+                <button type="button" class="btn btn-secondary" data-close-modal>Annulla</button>
+                <button type="submit" class="btn btn-primary">Salva</button>
             </div>
         </form>
     </div>

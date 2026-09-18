@@ -12,6 +12,7 @@ require __DIR__ . '/UserRepository.php';
 require __DIR__ . '/AziendaRepository.php';
 require __DIR__ . '/ContractRepository.php';
 require __DIR__ . '/ReservationRepository.php';
+require __DIR__ . '/ReminderRepository.php';
 require __DIR__ . '/MessageRepository.php';
 require __DIR__ . '/WhatsApp.php';
 require __DIR__ . '/SmtpMailer.php';

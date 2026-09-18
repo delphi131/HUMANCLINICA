@@ -219,6 +219,19 @@ deploy/deploy.ps1   script di sincronizzazione usato dal deploy automatico
     email SMTP.
   - *Modifica* — modale per correggere nome, contatti, data/ora, stato,
     beauty advisor assegnato.
+- **Prenotazioni manuali e promemoria** (dal calendario in `dashboard.php`):
+  - *+ Prenotazione manuale* — crea una riga normale in `tReservations`
+    (stessa tabella delle prenotazioni del sito pubblico), con una checkbox
+    opzionale "Invia email di conferma" che, se spuntata, invia il template
+    `CONFERMA_PRENOTAZIONE`. Se non spuntata, nessuna email parte.
+  - *+ Promemoria* — nota libera sul calendario (titolo, testo, data,
+    email opzionale), salvata in una tabella nuova e separata
+    (`tPHPReminders`, vedi `db/migrations/003_add_reminders_table.sql`) così
+    non tocca mai `tReservations`. Compare sul calendario con un'icona 📌 e
+    colore diverso dalle prenotazioni; cliccandoci sopra si apre la modale di
+    modifica/eliminazione. Anche qui l'email (template `PROMEMORIA`, da
+    creare in Messaggi) è opzionale via checkbox, inviata una sola volta al
+    salvataggio — non è un invio schedulato/ricorrente.
 - **Messaggi** (`messaggi.php`): elenco/editing dei template salvati in
   `tMessages` con `TYPE='M'` (placeholder `@NOME`, `@COGNOME`, `@DATA`,
   `@ORA`, `@TELEFONO`, `@EMAIL`) — lo stesso valore già usato dalle righe

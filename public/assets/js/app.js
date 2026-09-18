@@ -201,6 +201,97 @@
         }).catch((err) => alert('Errore: ' + err.message));
     });
 
+    // ---- Prenotazione manuale ----
+
+    const btnNewReservation = document.getElementById('btn-new-reservation');
+    if (btnNewReservation) {
+        btnNewReservation.addEventListener('click', () => {
+            const form = document.getElementById('form-new-reservation');
+            form.reset();
+            document.getElementById('new-res-day').value = document.getElementById('filter-from').value || '';
+            openModal('modal-new-reservation');
+        });
+    }
+
+    const formNewReservation = document.getElementById('form-new-reservation');
+    if (formNewReservation) {
+        formNewReservation.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const f = e.target;
+            postForm('api/reservation_create.php', {
+                nome: f.nome.value,
+                cognome: f.cognome.value,
+                telefono: f.telefono.value,
+                email: f.email.value,
+                day: f.day.value,
+                status: f.status.value,
+                beauty_advisor: f.beauty_advisor.value,
+                send_email: f.send_email.checked ? '1' : '',
+            }).then((data) => {
+                closeModal('modal-new-reservation');
+                loadList();
+                if (window.calendarInstance) window.calendarInstance.refetchEvents();
+                if (data.warning) alert(data.warning);
+            }).catch((err) => alert('Errore: ' + err.message));
+        });
+    }
+
+    // ---- Promemoria ----
+
+    const btnNewReminder = document.getElementById('btn-new-reminder');
+    if (btnNewReminder) {
+        btnNewReminder.addEventListener('click', () => openReminderModal(null, document.getElementById('filter-from').value));
+    }
+
+    function openReminderModal(reminder, defaultDay) {
+        const form = document.getElementById('form-reminder');
+        form.reset();
+        const isEdit = !!reminder;
+        document.getElementById('reminder-modal-title').textContent = isEdit ? 'Modifica promemoria' : 'Nuovo promemoria';
+        document.getElementById('reminder-id').value = isEdit ? reminder.pk : '';
+        document.getElementById('reminder-title').value = isEdit ? (reminder.title || '') : '';
+        document.getElementById('reminder-note').value = isEdit ? (reminder.note || '') : '';
+        document.getElementById('reminder-day').value = isEdit ? (reminder.day || '') : (defaultDay || '');
+        document.getElementById('reminder-email').value = isEdit ? (reminder.email || '') : '';
+        document.getElementById('reminder-send-email').checked = isEdit ? !!reminder.send_email : false;
+        document.getElementById('btn-delete-reminder').style.display = isEdit ? '' : 'none';
+        openModal('modal-reminder');
+    }
+
+    const formReminder = document.getElementById('form-reminder');
+    if (formReminder) {
+        formReminder.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const f = e.target;
+            const isEdit = !!f.id.value;
+            const url = isEdit ? 'api/reminder_update.php' : 'api/reminder_create.php';
+            postForm(url, {
+                id: f.id.value,
+                title: f.title.value,
+                note: f.note.value,
+                day: f.day.value,
+                email: f.email.value,
+                send_email: f.send_email.checked ? '1' : '',
+            }).then((data) => {
+                closeModal('modal-reminder');
+                if (window.calendarInstance) window.calendarInstance.refetchEvents();
+                if (data.warning) alert(data.warning);
+            }).catch((err) => alert('Errore: ' + err.message));
+        });
+    }
+
+    document.getElementById('btn-delete-reminder')?.addEventListener('click', () => {
+        const id = document.getElementById('reminder-id').value;
+        if (!id) return;
+        if (!confirm('Eliminare questo promemoria?')) return;
+        postForm('api/reminder_delete.php', { id })
+            .then(() => {
+                closeModal('modal-reminder');
+                if (window.calendarInstance) window.calendarInstance.refetchEvents();
+            })
+            .catch((err) => alert('Errore: ' + err.message));
+    });
+
     // ---- Calendar ----
 
     const calendarEl = document.getElementById('calendar');
@@ -221,6 +312,18 @@
                 loadList();
             },
             eventClick: function (info) {
+                const props = info.event.extendedProps || {};
+                if (props.type === 'reminder') {
+                    openReminderModal({
+                        pk: props.pk,
+                        title: props.title,
+                        note: props.note,
+                        email: props.email,
+                        send_email: props.send_email,
+                        day: info.event.startStr.slice(0, 10),
+                    });
+                    return;
+                }
                 const dateStr = info.event.startStr.slice(0, 10);
                 document.getElementById('filter-from').value = dateStr;
                 document.getElementById('filter-to').value = dateStr;

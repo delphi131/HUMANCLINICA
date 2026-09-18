@@ -114,6 +114,22 @@ return [
         'link_meet'    => 'link-meet',
     ],
 
+    // New table this app adds — see db/migrations/003_add_reminders_table.sql.
+    // Standalone calendar notes ("promemoria"), not real bookings, so they
+    // don't touch tReservations at all.
+    'reminders' => [
+        'table'       => 'tPHPReminders',
+        'pk'           => 'id',
+        'title'        => 'title',
+        'note'         => 'note',
+        'day'          => 'day',
+        'email'        => 'email',
+        'send_email'   => 'send_email',
+        'sent_at'      => 'sent_at',
+        'created_by'   => 'created_by',
+        'created_at'   => 'created_at',
+    ],
+
     'messages' => [
         'table'  => 'tMessages',
         'pk'      => 'id',
@@ -130,6 +146,9 @@ return [
         'booking_confirmation' => 'CONFERMA_PRENOTAZIONE',
         'taken_in_charge'      => 'PRESA_IN_CARICO',
         'collaboration_contract' => 'CONTRATTO_COLLABORAZIONE',
+        // Used by the "Promemoria" calendar reminders when their optional
+        // email is enabled. Placeholders: @TITOLO, @NOTE, @DATA.
+        'reminder'             => 'PROMEMORIA',
     ],
 
     // Config rows this app stores in tMessages (TYPE = 'CONFIG') for SMTP settings,
