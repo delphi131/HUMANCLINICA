@@ -19,7 +19,7 @@ if (!$table) {
 try {
     $pdo = Database::pdo();
     $stmt = $pdo->prepare(
-        'SELECT COLUMN_NAME, DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = :table ORDER BY ORDINAL_POSITION'
+        'SELECT COLUMN_NAME, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = :table ORDER BY ORDINAL_POSITION'
     );
     $stmt->execute(['table' => $table]);
     $rows = $stmt->fetchAll();
@@ -30,7 +30,9 @@ try {
     }
 
     foreach ($rows as $row) {
-        printf("%-30s %s\n", $row['COLUMN_NAME'], $row['DATA_TYPE']);
+        $len = $row['CHARACTER_MAXIMUM_LENGTH'];
+        $lenStr = $len === null ? '' : ($len == -1 ? 'MAX' : (string)$len);
+        printf("%-30s %-15s %s\n", $row['COLUMN_NAME'], $row['DATA_TYPE'], $lenStr);
     }
 } catch (Throwable $e) {
     fwrite(STDERR, 'Errore: ' . $e->getMessage() . "\n");
