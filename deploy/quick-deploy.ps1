@@ -8,17 +8,38 @@
 # a differenza dello script di Orion, qui il file viene salvato da parte
 # prima di svuotare la cartella e rimesso a posto subito dopo.
 #
-# Uso: apri PowerShell sul server, modifica se necessario le due variabili
+# Uso: apri PowerShell sul server, modifica se necessario le variabili
 # qui sotto, poi esegui questo script (o incollane il contenuto a mano).
 
-$RepoPath    = "C:\deploy-src\humanclinica"      # copia di lavoro locale del repo
-$SitePath    = "D:\sites\humanclinica-admin"     # cartella del sito live (IIS punta a "$SitePath\public")
+$RepoUrl  = "https://github.com/delphi131/HUMANCLINICA.git"
+$RepoPath = "C:\deploy-src\humanclinica"      # copia di lavoro locale del repo
+$SitePath = "D:\sites\humanclinica-admin"     # cartella del sito live (IIS punta a "$SitePath\public")
 
 $ErrorActionPreference = "Stop"
 
-cd $RepoPath
+# Clona il repository se non è già presente (prima esecuzione), invece di
+# fallire silenziosamente più avanti.
+if (-not (Test-Path (Join-Path $RepoPath ".git"))) {
+    Write-Host "Repository non trovato in $RepoPath, lo clono..." -ForegroundColor Cyan
+    git clone $RepoUrl $RepoPath
+    if ($LASTEXITCODE -ne 0) { throw "git clone fallito (codice $LASTEXITCODE)." }
+}
+
+Set-Location $RepoPath
+
+# I comandi esterni (git, robocopy, ...) non generano errori "terminanti"
+# per PowerShell: $ErrorActionPreference non basta, va controllato
+# $LASTEXITCODE dopo ognuno, altrimenti lo script continua anche se il
+# comando è fallito.
 git checkout main
+if ($LASTEXITCODE -ne 0) { throw "git checkout main fallito (codice $LASTEXITCODE)." }
+
 git pull
+if ($LASTEXITCODE -ne 0) { throw "git pull fallito (codice $LASTEXITCODE)." }
+
+if (-not (Test-Path (Join-Path $RepoPath "deploy\deploy.ps1"))) {
+    throw "deploy\deploy.ps1 non trovato in $RepoPath dopo il pull: controlla che $RepoPath sia davvero il repo HUMANCLINICA."
+}
 
 # PHP non ha una fase di build (niente obj/bin da pulire come per Orion).
 # L'unico stato da non perdere nella cartella di destinazione è
