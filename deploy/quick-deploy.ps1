@@ -13,7 +13,12 @@
 
 $RepoUrl  = "https://github.com/delphi131/HUMANCLINICA.git"
 $RepoPath = "C:\humanclinica-src"                              # copia di lavoro locale del repo
-$SitePath = "C:\iss-Site\app.humanclinica.it\admin"             # cartella del sito live (IIS punta a "$SitePath\public")
+# Cartella di deploy del pannello. NON deve necessariamente stare dentro la
+# cartella fisica del sito www.humanclinica.com esistente: il pannello viene
+# esposto su https://www.humanclinica.com/admin/ tramite una IIS Application
+# (Add Application, alias "admin") il cui Physical Path punta a "$SitePath\public",
+# indipendentemente da dove sta questa cartella sul disco.
+$SitePath = "C:\iss-Site\humanclinica-admin"
 
 $ErrorActionPreference = "Stop"
 
