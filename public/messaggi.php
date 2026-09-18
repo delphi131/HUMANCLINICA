@@ -83,7 +83,7 @@ $smtp = $messages->getSmtpConfig();
                 <?= Csrf::field() ?>
                 <input type="hidden" name="action" value="save_template">
                 <input type="hidden" name="name" value="<?= htmlspecialchars($t['name']) ?>">
-                <textarea name="value"><?= htmlspecialchars($t['value']) ?></textarea>
+                <textarea name="value" data-html-editor><?= htmlspecialchars($t['value']) ?></textarea>
                 <div class="modal-actions">
                     <button type="submit" class="btn btn-primary">Salva</button>
                 </div>
@@ -143,5 +143,6 @@ $smtp = $messages->getSmtpConfig();
         </form>
     </div>
 </div>
+<script src="assets/js/htmleditor.js"></script>
 </body>
 </html>
