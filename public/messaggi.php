@@ -69,7 +69,7 @@ $smtp = $messages->getSmtpConfig();
         <h2>Modelli di messaggio</h2>
         <p class="hint">
             Modelli prenotazioni (CONFERMA_PRENOTAZIONE, PRESA_IN_CARICO): usa @NOME, @COGNOME, @DATA, @ORA, @TELEFONO, @EMAIL.<br>
-            Modello contratto (CONTRATTO_COLLABORAZIONE, dalla pagina Aziende): usa @NOME_AZIENDA, @PIVA, @SEDE, @CITTA, @CAP, @RAPPRESENTANTE, @TELEFONO, @EMAIL, @DATA.
+            Modello contratto (CONTRATTO_COLLABORAZIONE, dalla pagina Aziende): usa @NOME_AZIENDA, @PIVA, @SEDE, @CITTA, @CAP, @RAPPRESENTANTE, @TELEFONO, @DATA.
         </p>
 
         <?php foreach ($templates as $t): ?>

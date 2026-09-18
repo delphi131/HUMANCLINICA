@@ -50,7 +50,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'CAP' => $azienda['cap'] ?? '',
                 'RAPPRESENTANTE' => $azienda['rappresentante'] ?? '',
                 'TELEFONO' => $azienda['telephone'] ?? '',
-                'EMAIL' => $azienda['email'] ?? '',
                 'DATA' => date('d/m/Y'),
             ]);
             $contracts->createGenerated($aziendaId, $html, (string)$user['username']);

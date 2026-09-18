@@ -60,15 +60,21 @@ return [
     // and correct below before relying on the Aziende page.
     'azienda' => [
         'table'          => 'tAzienda',
-        'pk'              => 'id_Azienda',
+        'pk'              => 'id',
         'nome'            => 'Nome',
         'piva'            => 'piva',
         'sede'            => 'sede',
-        'citta'           => 'citta',
+        // Showed up as "citt?" in a non-UTF8 console — best guess is the
+        // accented "città". Run `chcp 65001` (or set the PowerShell console
+        // to UTF-8) before `php tools/list_columns.php tAzienda` to confirm,
+        // and fix this line if it's still [MANCANTE] in check_schema.php.
+        'citta'           => 'città',
         'cap'             => 'cap',
         'rappresentante'  => 'Rappresentante',
         'telephone'       => 'telephone',
-        'email'           => 'email',
+        // No email column exists on tAzienda in the live DB (removed after
+        // check_schema.php confirmed it's missing) — company contact is
+        // just telephone/Rappresentante.
         'contratto'       => 'contratto',
         'enabled'         => 'enabled',
     ],

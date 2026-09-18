@@ -2,9 +2,9 @@
 -- template (content held inline as HTML) or an uploaded file (stored on
 -- disk under storage/contracts/, path recorded here).
 --
--- Adjust the FK target (dbo.tAzienda / id_Azienda) first if
--- config/schema.php's "azienda" mapping needed correcting after running
--- php tools/list_columns.php tAzienda.
+-- FK target confirmed via php tools/list_columns.php tAzienda: the real
+-- primary key column is "id", not "id_Azienda" as first guessed from the
+-- .bak backup.
 
 IF NOT EXISTS (SELECT 1 FROM sys.tables WHERE name = 'tAziendaContratti')
 BEGIN
@@ -17,7 +17,7 @@ BEGIN
         file_path NVARCHAR(500) NULL, -- relative path under storage/contracts/, NULL if generated
         created_at DATETIME NOT NULL DEFAULT GETDATE(),
         created_by NVARCHAR(100) NULL,
-        CONSTRAINT FK_tAziendaContratti_tAzienda FOREIGN KEY (id_Azienda) REFERENCES dbo.tAzienda(id_Azienda)
+        CONSTRAINT FK_tAziendaContratti_tAzienda FOREIGN KEY (id_Azienda) REFERENCES dbo.tAzienda(id)
     );
 END
 GO

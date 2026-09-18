@@ -33,7 +33,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'cap' => trim((string)($_POST['cap'] ?? '')),
             'rappresentante' => trim((string)($_POST['rappresentante'] ?? '')),
             'telephone' => trim((string)($_POST['telephone'] ?? '')),
-            'email' => trim((string)($_POST['email'] ?? '')),
             'enabled' => isset($_POST['enabled']) ? 1 : 0,
         ];
 
@@ -98,9 +97,6 @@ $a = $existing ? $aziende->toLogical($existing) : [];
             </label>
             <label>Telefono
                 <input type="text" name="telephone" value="<?= htmlspecialchars((string)($a['telephone'] ?? '')) ?>">
-            </label>
-            <label>Email
-                <input type="email" name="email" value="<?= htmlspecialchars((string)($a['email'] ?? '')) ?>">
             </label>
             <label style="flex-direction:row; align-items:center; gap:8px;">
                 <input type="checkbox" name="enabled" value="1" <?= !empty($a['enabled']) ? 'checked' : '' ?> style="width:auto">

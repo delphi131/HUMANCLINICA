@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 final class AziendaRepository
 {
-    private const EDITABLE = ['nome', 'piva', 'sede', 'citta', 'cap', 'rappresentante', 'telephone', 'email', 'enabled'];
+    private const EDITABLE = ['nome', 'piva', 'sede', 'citta', 'cap', 'rappresentante', 'telephone', 'enabled'];
 
     private PDO $pdo;
     private array $map;
