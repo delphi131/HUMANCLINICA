@@ -34,10 +34,25 @@ $fields = [
     'status' => trim((string)($_POST['status'] ?? '')) ?: 'CONFERMATO',
     'beauty_advisor' => trim((string)($_POST['beauty_advisor'] ?? '')),
     'day' => ReservationRepository::toDayInt($day),
+    // Columns the manual-reservation form has no input for, but that the
+    // public booking flow always fills in — safe placeholder values in case
+    // any of them are NOT NULL on the live DB (see ReservationRepository::EDITABLE).
+    'settore' => '',
+    'sottosettore' => '',
+    'price' => 0,
+    'pacchetto' => '',
+    'package_id' => 0,
+    'payment_id' => 0,
+    'token' => bin2hex(random_bytes(16)),
+    'link_meet' => '',
 ];
 
 $repo = new ReservationRepository();
-$id = $repo->create($fields);
+try {
+    $id = $repo->create($fields);
+} catch (Throwable $e) {
+    json_error('Creazione prenotazione fallita: ' . $e->getMessage(), 500);
+}
 
 // Sending the confirmation email is optional (checkbox in the UI) — a
 // manual reservation is often just a note, not something the client needs

@@ -28,13 +28,17 @@ $email = trim((string)($_POST['email'] ?? ''));
 $sendEmail = !empty($_POST['send_email']);
 
 $reminders = new ReminderRepository();
-$id = $reminders->create([
-    'title' => $title,
-    'note' => $note,
-    'day' => $day,
-    'email' => $email,
-    'send_email' => $sendEmail,
-], Auth::user()['username'] ?? null);
+try {
+    $id = $reminders->create([
+        'title' => $title,
+        'note' => $note,
+        'day' => $day,
+        'email' => $email,
+        'send_email' => $sendEmail,
+    ], Auth::user()['username'] ?? null);
+} catch (Throwable $e) {
+    json_error('Creazione promemoria fallita: ' . $e->getMessage(), 500);
+}
 
 // The email is entirely optional (checkbox in the UI) — most reminders are
 // just an internal note on the calendar with nothing to notify anyone about.

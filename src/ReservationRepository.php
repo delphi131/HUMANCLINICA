@@ -9,7 +9,14 @@ final class ReservationRepository
     private string $table;
 
     /** Logical fields an admin is allowed to edit from the UI. */
-    private const EDITABLE = ['day', 'status', 'beauty_advisor', 'nome', 'cognome', 'telefono', 'email', 'price', 'pacchetto'];
+    private const EDITABLE = [
+        'day', 'status', 'beauty_advisor', 'nome', 'cognome', 'telefono', 'email', 'price', 'pacchetto',
+        // Not exposed in the edit form, but create() (manual reservations)
+        // needs to be able to set them — several of these are likely
+        // NOT NULL on the live DB since the public booking flow always
+        // fills them in (same pattern as tUsers.Password, see README).
+        'settore', 'sottosettore', 'package_id', 'payment_id', 'token', 'link_meet',
+    ];
 
     /**
      * "day" is stored as an int in YYYYMMDD format (e.g. 20260917), no time
