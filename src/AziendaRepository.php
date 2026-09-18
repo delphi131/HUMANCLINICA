@@ -75,7 +75,7 @@ final class AziendaRepository
         );
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($params);
-        return $this->pdo->lastInsertId();
+        return Database::lastInsertId($this->pdo);
     }
 
     /**

@@ -95,7 +95,7 @@ final class ContractRepository
         );
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($params);
-        return $this->pdo->lastInsertId();
+        return Database::lastInsertId($this->pdo);
     }
 
     public function delete($id): bool

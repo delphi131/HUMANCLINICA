@@ -69,4 +69,19 @@ final class Database
     {
         return '[' . str_replace(']', ']]', $identifier) . ']';
     }
+
+    /**
+     * Id of the row just INSERTed, right after execute() on the same
+     * connection. PDO::lastInsertId() throws "SQLSTATE[IM001]: Driver does
+     * not support this function" on PDO_ODBC (db.driver = 'odbc') — the
+     * Microsoft ODBC Driver for SQL Server just doesn't implement it. This
+     * queries SCOPE_IDENTITY() instead, which is plain T-SQL and works the
+     * same way regardless of which PDO driver is in use.
+     */
+    public static function lastInsertId(PDO $pdo): int
+    {
+        $stmt = $pdo->query('SELECT CAST(SCOPE_IDENTITY() AS BIGINT) AS id');
+        $row = $stmt->fetch();
+        return (int)($row['id'] ?? 0);
+    }
 }
