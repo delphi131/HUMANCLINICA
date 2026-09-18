@@ -1,0 +1,63 @@
+name: Deploy to IIS
+
+# Runs on the self-hosted runner installed on the humanclinica.com server.
+# Push to main -> sync files into the live folder -> recycle the IIS app pool.
+# Can also be triggered manually from the Actions tab (workflow_dispatch),
+# e.g. to re-sync after a manual change on the server.
+
+"on":
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Prevent two deploys from racing on the same destination folder.
+concurrency:
+  group: deploy-humanclinica
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, windows, humanclinica]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: PHP syntax check
+        shell: pwsh
+        run: |
+          $failed = $false
+          Get-ChildItem -Path $env:GITHUB_WORKSPACE -Recurse -Filter *.php | ForEach-Object {
+              $out = php -l $_.FullName 2>&1
+              if ($LASTEXITCODE -ne 0) {
+                  Write-Host "::error::$out"
+                  $failed = $true
+              }
+          }
+          if ($failed) {
+              Write-Host "::error::Errori di sintassi PHP trovati, deploy annullato."
+              exit 1
+          }
+
+      - name: Sync files to live folder
+        shell: pwsh
+        env:
+          DEPLOY_PATH: ${{ vars.DEPLOY_PATH }}
+        run: |
+          if (-not $env:DEPLOY_PATH) {
+              Write-Host "::error::Variabile repository DEPLOY_PATH non impostata (Settings -> Secrets and variables -> Actions -> Variables)."
+              exit 1
+          }
+          & "$env:GITHUB_WORKSPACE\deploy\deploy.ps1" -Source $env:GITHUB_WORKSPACE -Destination $env:DEPLOY_PATH
+
+      - name: Recycle IIS app pool
+        shell: pwsh
+        env:
+          IIS_APP_POOL: ${{ vars.IIS_APP_POOL }}
+        run: |
+          if (-not $env:IIS_APP_POOL) {
+              Write-Host "IIS_APP_POOL non impostata, salto il recycle (non obbligatorio per PHP)."
+              exit 0
+          }
+          Import-Module WebAdministration
+          Restart-WebAppPool -Name $env:IIS_APP_POOL
+          Write-Host "App pool '$env:IIS_APP_POOL' riavviato."

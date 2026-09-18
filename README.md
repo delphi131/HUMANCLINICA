@@ -88,14 +88,70 @@ Esegui prima la migrazione che aggiunge la colonna (una tantum):
    (funzionano su Apache e IIS).
 6. Apri `login.php` (o `index.php`, che reindirizza automaticamente).
 
+## Deploy automatico da GitHub (server IIS dedicato)
+
+Se hai un server IIS dedicato con pieno controllo, `.github/workflows/deploy.yml`
+automatizza il deploy: ad ogni push su `main` un **GitHub Actions self-hosted
+runner** installato sul server sincronizza i file nella cartella del sito.
+Nessuna porta da aprire, nessuna credenziale FTP/SSH da gestire da GitHub:
+il runner gira sul server e va lui stesso a "tirare" gli aggiornamenti.
+
+### Setup una tantum
+
+1. **Scegli la cartella di deploy sul server**, es. `D:\sites\humanclinica-admin\`.
+   L'intero repository (non solo `public/`) va sincronizzato lì, perché il
+   codice in `public/` referenzia `../src`, `../config`, ecc. con percorsi
+   relativi — la struttura del repo va mantenuta intera su disco.
+
+2. **Imposta il sito IIS** con physical path
+   `D:\sites\humanclinica-admin\public` (così `config/`, `src/`, `db/`,
+   `tools/` restano fuori dalla cartella servita da IIS, mai raggiungibili
+   via browser).
+
+3. **Crea manualmente `config\config.php`** in
+   `D:\sites\humanclinica-admin\config\config.php` (copiando
+   `config.sample.php` e compilandolo con le credenziali reali). Il deploy
+   automatico non lo tocca mai (è escluso esplicitamente in
+   `deploy/deploy.ps1`), quindi va creato una sola volta.
+
+4. **Installa il self-hosted runner sul server**: nel repo GitHub vai su
+   *Settings → Actions → Runners → New self-hosted runner*, scegli Windows e
+   segui i comandi mostrati (download, `config.cmd` con il token generato lì
+   — cambia ad ogni registrazione, va preso al momento). Quando richiesto,
+   assegna al runner (oltre alle label di default) anche la label
+   `humanclinica`, così il workflow lo seleziona in modo specifico (utile se
+   in futuro registri altri runner sullo stesso server per altri siti, come
+   Footgolf Italia).
+   Installalo come **servizio Windows** (`.\svc install` poi `.\svc start`
+   dentro la cartella del runner) così riparte da solo dopo un riavvio e non
+   serve una sessione utente aperta.
+
+5. **Imposta le variabili del repository**: *Settings → Secrets and
+   variables → Actions → tab Variables* → aggiungi:
+   - `DEPLOY_PATH` = `D:\sites\humanclinica-admin`
+   - `IIS_APP_POOL` = nome dell'application pool del sito (opzionale — se
+     presente viene riavviato ad ogni deploy; per PHP non è strettamente
+     necessario, ma evita cache stantie se usi opcache).
+
+6. **Fai un push su `main`** (o lancia il workflow manualmente dalla tab
+   *Actions* → *Deploy to IIS* → *Run workflow*): il runner esegue un
+   controllo di sintassi PHP (`php -l` su tutti i file), sincronizza i file
+   con `robocopy /MIR` (esclude sempre `.git`, `.github` e `config.php`) ed
+   eventualmente riavvia l'application pool.
+
+Da quel momento, ogni volta che fai il merge su `main`, il sito si aggiorna
+da solo entro pochi secondi.
+
 ## Struttura
 
 ```
-config/         configurazione (config.php, schema.php) — non pubblica
-db/migrations/  script SQL una tantum
-src/            classi PHP (Database, Auth, Repository, SmtpMailer, ...)
-tools/          script da riga di comando (set_password, check_schema)
-public/         document root: pagine, assets, endpoint api/*.php
+config/             configurazione (config.php, schema.php) — non pubblica
+db/migrations/      script SQL una tantum
+src/                classi PHP (Database, Auth, Repository, SmtpMailer, ...)
+tools/              script da riga di comando (set_password, check_schema)
+public/             document root: pagine, assets, endpoint api/*.php
+deploy/deploy.ps1   script di sincronizzazione usato dal deploy automatico
+.github/workflows/  workflow GitHub Actions (deploy.yml)
 ```
 
 ## Funzionalità
