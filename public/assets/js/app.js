@@ -303,7 +303,7 @@
             headerToolbar: { left: 'prev,next today', center: 'title', right: '' },
             events: function (info, successCallback, failureCallback) {
                 api(`api/events.php?start=${info.startStr}&end=${info.endStr}`)
-                    .then((data) => successCallback(Array.isArray(data) ? data : []))
+                    .then((data) => successCallback(Array.isArray(data.events) ? data.events : []))
                     .catch((err) => failureCallback(err));
             },
             dateClick: function (info) {

@@ -76,4 +76,8 @@ try {
     // ignore — see comment above
 }
 
-echo json_encode($events);
+// json_ok() (not a bare json_encode of $events): app.js's shared api()
+// helper expects every endpoint to answer {"ok":true,...} — a raw JSON
+// array has no .ok key, so api() treated every calendar fetch as failed
+// ("Errore sconosciuto") and the calendar silently never showed events.
+json_ok(['events' => $events]);
