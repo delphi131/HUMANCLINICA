@@ -20,6 +20,28 @@ final class Database
                     $cfg['port'] ?? 1433,
                     $cfg['database']
                 );
+            } elseif ($driver === 'odbc') {
+                // Fallback for a PHP version newer than the latest Microsoft
+                // sqlsrv/pdo_sqlsrv driver release: goes through the
+                // system-wide "ODBC Driver 17/18 for SQL Server" instead,
+                // which is independent of the PHP build. Requires PDO_ODBC
+                // (usually already compiled into official Windows PHP
+                // builds — enable with extension=pdo_odbc in php.ini) and
+                // that ODBC driver installed separately on the server.
+                // ODBC Driver 18 defaults to Encrypt=yes and will refuse to
+                // connect without a trusted certificate on the SQL Server;
+                // set odbc_extra (e.g. 'TrustServerCertificate=yes') in
+                // config.php if you hit an SSL/certificate error.
+                $odbcDriverName = $cfg['odbc_driver_name'] ?? 'ODBC Driver 17 for SQL Server';
+                $odbcExtra = trim((string)($cfg['odbc_extra'] ?? ''));
+                $dsn = sprintf(
+                    'odbc:Driver={%s};Server=%s,%d;Database=%s%s',
+                    $odbcDriverName,
+                    $cfg['host'],
+                    $cfg['port'] ?? 1433,
+                    $cfg['database'],
+                    $odbcExtra !== '' ? ';' . $odbcExtra : ''
+                );
             } else {
                 // Microsoft Drivers for PHP for SQL Server (typical on Windows/IIS).
                 $dsn = sprintf(

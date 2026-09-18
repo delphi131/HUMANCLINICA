@@ -6,13 +6,27 @@
 return [
     'db' => [
         // 'sqlsrv' (Microsoft Drivers for PHP, typical on Windows/IIS hosting)
-        // or 'dblib' (FreeTDS, typical on Linux hosting)
+        // 'dblib'  (FreeTDS, typical on Linux hosting)
+        // 'odbc'   (system ODBC Driver 17/18 for SQL Server, via PDO_ODBC —
+        //           use this if your PHP version is newer than the latest
+        //           official sqlsrv/pdo_sqlsrv release and `php -m` shows no
+        //           sqlsrv/pdo_sqlsrv module; PDO_ODBC is usually already
+        //           built into official Windows PHP builds)
         'driver'   => 'sqlsrv',
         'host'     => '127.0.0.1',
         'port'     => 1433,
         'database' => 'HumanClinica',
         'user'     => 'sa',
         'password' => '',
+        // Only used when driver = 'odbc': must match the exact name of the
+        // installed ODBC driver, as shown by "ODBC Data Sources (64-bit)" ->
+        // Drivers tab on the server (e.g. 'ODBC Driver 17 for SQL Server' or
+        // 'ODBC Driver 18 for SQL Server').
+        'odbc_driver_name' => 'ODBC Driver 17 for SQL Server',
+        // Only used when driver = 'odbc': extra raw DSN attributes appended
+        // as-is. With ODBC Driver 18 (which defaults to Encrypt=yes) you'll
+        // often need: 'TrustServerCertificate=yes'
+        'odbc_extra' => '',
     ],
 
     'app' => [

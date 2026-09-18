@@ -60,6 +60,12 @@ Esegui prima la migrazione che aggiunge la colonna (una tantum):
   Server — tipico su hosting Windows/IIS, spesso già presente se gira anche
   l'app ASP.NET) oppure **pdo_dblib** (FreeTDS, hosting Linux). Il driver si
   sceglie in `config/config.php` (`db.driver`).
+  Se la versione di PHP è più recente dell'ultima release ufficiale di
+  `pdo_sqlsrv` (capita con versioni di PHP appena uscite — verifica con
+  `php -m | grep sqlsrv`), usa `db.driver = 'odbc'`: passa dal driver ODBC di
+  sistema (**ODBC Driver 17/18 for SQL Server**, da installare a parte se non
+  già presente) tramite `PDO_ODBC`, che di solito è già incluso nelle build
+  ufficiali di PHP per Windows e non dipende dalla versione di PHP.
 - Nessuna dipendenza esterna: niente Composer, niente librerie da installare
   (l'invio email usa un client SMTP scritto internamente in `src/SmtpMailer.php`,
   il calendario usa FullCalendar via CDN).
