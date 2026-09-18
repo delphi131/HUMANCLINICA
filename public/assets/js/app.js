@@ -65,12 +65,13 @@
         tbody.innerHTML = rows.map((r) => {
             const name = `${r.nome || ''} ${r.cognome || ''}`.trim() || '(senza nome)';
             const wa = whatsappLink(r.telefono, `Ciao ${r.nome || ''}, la contattiamo da Human Clinica riguardo la sua prenotazione.`);
+            const statusClass = 's-' + (r.status || '').toLowerCase();
             return `
             <tr data-id="${r.pk}">
                 <td>${escapeHtml(name)}</td>
                 <td>${escapeHtml(r.telefono || '')}<br><small>${escapeHtml(r.email || '')}</small></td>
                 <td>${escapeHtml(formatDate(r.day))}</td>
-                <td><span class="status-badge">${escapeHtml(r.status || '')}</span></td>
+                <td><span class="status-badge ${statusClass}">${escapeHtml(r.status || '')}</span></td>
                 <td>${escapeHtml(r.beauty_advisor || '')}</td>
                 <td class="actions-cell">
                     <button class="btn btn-sm btn-success" data-action="taken-in-charge">Presa in carico</button>

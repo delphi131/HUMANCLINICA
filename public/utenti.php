@@ -45,11 +45,11 @@ $schema = Config::schema()['users'];
                 <?php foreach ($rows as $row): $u = $users->toLogical($row); ?>
                 <tr>
                     <td><?= htmlspecialchars((string)$u['username']) ?></td>
-                    <td><?= htmlspecialchars($users->displayName($u)) ?></td>
+                    <td><?= htmlspecialchars($users->displayName($row)) ?></td>
                     <td><?= htmlspecialchars((string)($u['email'] ?? '')) ?></td>
                     <td><?= htmlspecialchars((string)($u['telephone'] ?? '')) ?></td>
                     <td><?= htmlspecialchars((string)($u['id_azienda'] ?? '')) ?></td>
-                    <td><span class="status-badge"><?= $users->isAdmin($u) ? 'Admin' : 'Beauty Advisor' ?></span></td>
+                    <td><span class="status-badge <?= $users->isAdmin($row) ? 's-nuovo' : '' ?>"><?= $users->isAdmin($row) ? 'Admin' : 'Beauty Advisor' ?></span></td>
                     <td class="actions-cell">
                         <a class="btn btn-sm btn-outline" href="utente_form.php?id=<?= urlencode((string)$u['pk']) ?>">Modifica</a>
                     </td>

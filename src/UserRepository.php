@@ -63,6 +63,10 @@ final class UserRepository
         return $stmt->execute(['hash' => $hash, 'username' => $username]);
     }
 
+    /**
+     * @param array $user A raw DB row (physical column keys), e.g. from
+     *   findByUsername()/findById() — NOT the toLogical() output.
+     */
     public function isAdmin(array $user): bool
     {
         $value = $user[$this->map['type_profile']] ?? null;
@@ -74,6 +78,10 @@ final class UserRepository
         return strcasecmp(trim((string)$value), (string)$this->map['type_profile_admin_value']) === 0;
     }
 
+    /**
+     * @param array $user A raw DB row (physical column keys), e.g. from
+     *   findByUsername()/findById() — NOT the toLogical() output.
+     */
     public function displayName(array $user): string
     {
         $nome = trim((string)($user[$this->map['nome']] ?? ''));

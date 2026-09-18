@@ -47,7 +47,7 @@ $rows = $aziende->listAll();
                     <td><?= htmlspecialchars(trim(($a['sede'] ?? '') . ' ' . ($a['citta'] ?? '') . ' ' . ($a['cap'] ?? ''))) ?></td>
                     <td><?= htmlspecialchars((string)($a['rappresentante'] ?? '')) ?></td>
                     <td><?= htmlspecialchars((string)($a['telephone'] ?? '')) ?></td>
-                    <td><span class="status-badge"><?= !empty($a['enabled']) ? 'Attiva' : 'Non attiva' ?></span></td>
+                    <td><span class="status-badge <?= !empty($a['enabled']) ? 's-confermato' : 's-annullato' ?>"><?= !empty($a['enabled']) ? 'Attiva' : 'Non attiva' ?></span></td>
                     <td class="actions-cell">
                         <a class="btn btn-sm btn-outline" href="azienda_form.php?id=<?= urlencode((string)$a['pk']) ?>">Modifica</a>
                         <a class="btn btn-sm btn-outline" href="azienda_contratto.php?id=<?= urlencode((string)$a['pk']) ?>">Contratto</a>

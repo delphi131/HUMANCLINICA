@@ -160,7 +160,7 @@ $list = array_map(fn($row) => $contracts->toLogical($row), $contracts->listForAz
             <tbody>
                 <?php foreach ($list as $c): ?>
                 <tr>
-                    <td><span class="status-badge"><?= $c['source'] === 'uploaded' ? 'Caricato' : 'Generato' ?></span></td>
+                    <td><span class="status-badge <?= $c['source'] === 'uploaded' ? 's-confermato' : 's-nuovo' ?>"><?= $c['source'] === 'uploaded' ? 'Caricato' : 'Generato' ?></span></td>
                     <td><?= htmlspecialchars((string)($c['file_name'] ?? 'contratto.html')) ?></td>
                     <td><?= htmlspecialchars((string)$c['created_at']) ?></td>
                     <td><?= htmlspecialchars((string)($c['created_by'] ?? '')) ?></td>

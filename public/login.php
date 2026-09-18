@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body class="login-body">
 <div class="login-card">
-    <h1 class="brand">humanclinica</h1>
+    <img src="assets/img/logo.webp" alt="Human Clinica" class="login-logo">
     <p class="brand-sub">Pannello prenotazioni</p>
 
     <?php if ($error): ?>
